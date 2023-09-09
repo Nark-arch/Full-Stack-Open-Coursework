@@ -1,7 +1,35 @@
 ```mermaid
-  graph TD;
-      A-->B;
-      A-->C;
-      B-->D;
-      C-->D;
+  sequenceDiagram 
+    participant browser
+    participant server
+    browser ->> server: POST https://studies.cs.helsinki.fi/exampleapp/new-note
+    activate server
+    note left of server: Creates a new note object
+    note left of server: attributes: POST request = content, timestamp = current timestamp
+    note left of server: object is added to notes array, redirects browser to make it reload
+    server -->> browser: HTTP Status 302, Redirect location /notes
+    deactivate server
+    note right of browser: Reloads notes page
+
+    
+    browser ->> server: GET https://studies.cs.helsinki.fi/exampleapp/notes
+    activate server
+    server-->>browser: HTML Document
+    deactivate server
+
+    browser ->> server: GET https://studies.cs.helsinki.fi/exampleapp/main.css
+    activate server
+    server-->> browser: The CSS file
+    deactivate server
+
+    browser ->> server: GET https://studies.cs.helsinki.fi/exampleapp/main.js
+    activate server
+    server-->>browser: The JS file
+    deactivate server
+
+    browser ->> server: GET https://studies.cs.helsinki.fi/exampleapp/data.json
+    activate server
+    server -->> browser: The Json file
+    deactivate server
+    note right of browser: Site with updated notes array is loaded from the server
 ```
