@@ -8,5 +8,5 @@
         activate server
         server -->> browser: HTTP Status 201
         deactivate server
-        note left of server: recieves new note in json fromat, adds it to josn list stored on server
+        note left of server: recieves new note in json format, adds it to josn list stored on server
 ```
