@@ -16,6 +16,7 @@
     activate server
     server-->>browser: HTML Document
     deactivate server
+    note right of browser: reads that html file requires js & css files
 
     browser ->> server: GET https://studies.cs.helsinki.fi/exampleapp/main.css
     activate server
@@ -26,7 +27,8 @@
     activate server
     server-->>browser: The JS file
     deactivate server
-
+    
+    note right of browser: browser runs js code which first fetches the JSON from server
     browser ->> server: GET https://studies.cs.helsinki.fi/exampleapp/data.json
     activate server
     server -->> browser: application/json, charset=utf-8, [{"content":"aaaaa","date":"2023-09-08T16:54:04.539Z"},...]
