@@ -33,5 +33,5 @@
     activate server
     server -->> browser: application/json, charset=utf-8, [{"content":"aaaaa","date":"2023-09-08T16:54:04.539Z"},...]
     deactivate server
-    note right of browser: Site with updated notes array is loaded from the server
+    note right of browser: Site with updated notes array is loaded by the JS from the json
 ```
