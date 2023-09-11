@@ -6,7 +6,7 @@
         note right of browser: sends the new note in json format (with timestamp) in POST
         browser ->> server: POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa
         activate server
-        server -->> browser: HTTP Status 201
+        server -->> browser: HTTP Status 201 Created, message:"note created"
         deactivate server
         note left of server: recieves new note in json format, adds it to josn list stored on server
 ```
