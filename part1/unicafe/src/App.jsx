@@ -6,10 +6,10 @@ const Button = (props) => {
 
 const StatisticsLine = (props) => {
   return (
-      <tr>
-        <td>{props.text}</td>
-        <td>{props.value}</td>
-      </tr>
+    <tr>
+      <td>{props.text}</td>
+      <td>{props.value}</td>
+    </tr>
   );
 };
 
@@ -30,12 +30,12 @@ const Statistics = (props) => {
   return (
     <table>
       <tbody>
-      <StatisticsLine text="good" value={props.good} />
-      <StatisticsLine text="neutral" value={props.neutral} />
-      <StatisticsLine text="bad" value={props.bad} />
-      <StatisticsLine text="all" value={all} />
-      <StatisticsLine text="average" value={average} />
-      <StatisticsLine text="percentage" value={positivePercentage} />
+        <StatisticsLine text="good" value={props.good} />
+        <StatisticsLine text="neutral" value={props.neutral} />
+        <StatisticsLine text="bad" value={props.bad} />
+        <StatisticsLine text="all" value={all} />
+        <StatisticsLine text="average" value={average} />
+        <StatisticsLine text="percentage" value={positivePercentage} />
       </tbody>
     </table>
   );
