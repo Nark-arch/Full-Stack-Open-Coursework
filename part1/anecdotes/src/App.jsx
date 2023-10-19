@@ -1,8 +1,10 @@
 import { useState } from 'react'
 
 const Button = (props) => {
-  return <button onClick={props.handleClick}> next anecdote </button>
+  return <button onClick={props.handleClick}> {props.text} </button>
 }
+
+
 
 const App = () => {
   const anecdotes = [
@@ -15,19 +17,28 @@ const App = () => {
     'Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when diagnosing patients.',
     'The only way to go fast, is to go well.'
   ]
+
+  const [votes, setVotes] = useState(new Uint32Array(8))
    
   const [selected, setSelected] = useState(0)
 
-  const handleClick = () => {
+  const handleNextClick = () => {
     const newSelected = Math.floor(Math.random() * 8)
-    console.log(newSelected)
     setSelected(newSelected)
+  }
+
+  const handleVoteClick = () => {
+    const newVotes = { ...votes }
+    newVotes[selected] += 1
+    setVotes(newVotes)
   }
 
   return (
     <div>
       {anecdotes[selected]} <br />
-      <Button handleClick={handleClick} />
+      has {votes[selected]} votes <br />
+      <Button text="vote" handleClick={handleVoteClick} />
+      <Button text="next anecdote" handleClick={handleNextClick} />
     </div>
   )
 }
