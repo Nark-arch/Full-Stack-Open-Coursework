@@ -2,6 +2,8 @@ import Persons from "./components/Persons";
 
 import PersonForm from "./components/PersonForm";
 
+import Notification from "./components/Notification";
+
 import Filter from "./components/Filter";
 
 import { useState, useEffect } from "react";
@@ -19,6 +21,10 @@ const App = () => {
   const [newNumber, setNewNumber] = useState("");
 
   const [filter, setFilter] = useState("");
+
+  const [notification, setNotification] = useState(null);
+
+  const [notificationIsError, setNotificationIsError] = useState(false);
 
   //use effect
   useEffect(() => {
@@ -49,20 +55,39 @@ const App = () => {
   };
 
   const updatePerson = (person) => {
-    if(window.confirm(`${person.name} is already added to the phonebook, replace the old number with a new one?`)) {
-      return (
-        personService
-          .update(person)
-          .then((updatedPerson) => {
-            const newPersons = persons.map(p=>p.id  === updatedPerson.id ? updatedPerson : p); //copy of persons with updated record
-            updatePersons(newPersons);
-            setNewName("");
-            setNewNumber("");
-          })
+    if (
+      window.confirm(
+        `${person.name} is already added to the phonebook, replace the old number with a new one?`
       )
+    ) {
+      return personService
+        .update(person)
+        .then((updatedPerson) => {
+          const newPersons = persons.map((p) =>
+            p.id === updatedPerson.id ? updatedPerson : p
+          ); //copy of persons with updated record
+          updatePersons(newPersons);
+          setNewName("");
+          setNewNumber("");
+          setNotification(
+            `Record of ${person.name} is updated to ${person.number}`
+          );
+          setTimeout(() => setNotification(null), 5000);
+        })
+        .catch(() => {
+          setNotificationIsError(true);
+          setNotification(
+            `Record of ${person.name} has already been removed from the server`
+          );
+          setTimeout(() => {
+            setNotification(null);
+            setNotificationIsError(false);
+          }, 5000);
+        });
     }
-    return console.log(`Record of ${person.name} is unchanged`) 
-  }
+    setNotification(`Record of ${person.name} is unchanged`);
+    setTimeout(() => setNotification(null), 5000);
+  };
 
   //event handlers
   const handleaddPerson = (event) => {
@@ -73,20 +98,20 @@ const App = () => {
     const newpersonObject = {
       name: newName,
       number: newNumber,
-      id: indexCheck===-1 ? persons.length + 1 : indexCheck + 1, // id same as original if name duplicate, done to make updation possible with one argument
+      id: indexCheck === -1 ? persons.length + 1 : indexCheck + 1, // id same as original if name duplicate, done to make updation possible with one argument
     };
 
     if (indexCheck !== -1) {
-      return updatePerson(newpersonObject)
+      return updatePerson(newpersonObject);
     }
 
-    personService
-      .create(newpersonObject)
-      .then((newPerson) => {
-        const newPersons = persons.concat(newPerson);
-        updatePersons(newPersons);
-        setNewName("");
-        setNewNumber("");
+    personService.create(newpersonObject).then((newPerson) => {
+      const newPersons = persons.concat(newPerson);
+      updatePersons(newPersons);
+      setNewName("");
+      setNewNumber("");
+      setNotification(`Record of ${newPerson.name} is added`);
+      setTimeout(() => setNotification(null), 5000);
     });
   };
 
@@ -109,20 +134,21 @@ const App = () => {
 
   const handleDeletePerson = (person) => {
     if (window.confirm(`Delete ${person.name} ?`)) {
-      return (
-        personService
-          .deleteEntry(person)
-          .then(() => {
-            const newPersons = persons.filter((p) => p.id !== person.id);
-            updatePersons(newPersons)}))
+      return personService.deleteEntry(person).then(() => {
+        const newPersons = persons.filter((p) => p.id !== person.id);
+        updatePersons(newPersons);
+        setNotification(`Record of ${person.name} is deleted`);
+        setTimeout(() => setNotification(null), 5000);
+      });
     }
-    return console.log(`Delete of ${person.name} cancelled`)
+    return console.log(`Delete of ${person.name} cancelled`);
   };
 
   //returned website
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={notification} isError={notificationIsError} />
 
       <Filter filter={filter} handleFilterChange={handleFilterChange} />
 
