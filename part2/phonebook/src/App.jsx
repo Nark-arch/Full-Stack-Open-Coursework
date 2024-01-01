@@ -74,11 +74,19 @@ const App = () => {
           );
           setTimeout(() => setNotification(null), 5000);
         })
-        .catch(() => {
+        .catch((error) => {
           setNotificationIsError(true);
-          setNotification(
-            `Record of ${person.name} has already been removed from the server`
-          );
+          if (error.response.status === 404) {
+            setNotification(
+              `Record of ${person.name} has already been removed from the server`
+            );
+            const newPersons = persons.filter((p) => p.id !== person.id);
+            updatePersons(newPersons);
+          } else if (error.response.status === 400) {
+            setNotification(`${error.response.data.error}`);
+          } else {
+            console.log(error.response);
+          }
           setTimeout(() => {
             setNotification(null);
             setNotificationIsError(false);
@@ -93,26 +101,36 @@ const App = () => {
   const handleaddPerson = (event) => {
     event.preventDefault();
 
-    const indexCheck = persons.findIndex((person) => person.name === newName);
+    const dupCheck = persons.find((person) => person.name === newName);
 
     const newpersonObject = {
       name: newName,
       number: newNumber,
-      id: indexCheck === -1 ? persons.length + 1 : indexCheck + 1, // id same as original if name duplicate, done to make updation possible with one argument
+      id: dupCheck === undefined ? persons.length + 1 : dupCheck.id, // id same as original if name duplicate, done to make updation possible with one argument
     };
 
-    if (indexCheck !== -1) {
+    if (dupCheck !== undefined) {
       return updatePerson(newpersonObject);
     }
 
-    personService.create(newpersonObject).then((newPerson) => {
-      const newPersons = persons.concat(newPerson);
-      updatePersons(newPersons);
-      setNewName("");
-      setNewNumber("");
-      setNotification(`Record of ${newPerson.name} is added`);
-      setTimeout(() => setNotification(null), 5000);
-    });
+    personService
+      .create(newpersonObject)
+      .then((newPerson) => {
+        const newPersons = persons.concat(newPerson);
+        updatePersons(newPersons);
+        setNewName("");
+        setNewNumber("");
+        setNotification(`Record of ${newPerson.name} is added`);
+        setTimeout(() => setNotification(null), 5000);
+      })
+      .catch((error) => {
+        setNotificationIsError(true);
+        setNotification(`${error.response.data.error}`);
+        setTimeout(() => {
+          setNotification(null);
+          setNotificationIsError(false);
+        }, 5000);
+      });
   };
 
   const handleNameChange = (event) => {
@@ -134,12 +152,24 @@ const App = () => {
 
   const handleDeletePerson = (person) => {
     if (window.confirm(`Delete ${person.name} ?`)) {
-      return personService.deleteEntry(person).then(() => {
-        const newPersons = persons.filter((p) => p.id !== person.id);
-        updatePersons(newPersons);
-        setNotification(`Record of ${person.name} is deleted`);
-        setTimeout(() => setNotification(null), 5000);
-      });
+      return personService
+        .deleteEntry(person)
+        .then(() => {
+          const newPersons = persons.filter((p) => p.id !== person.id);
+          updatePersons(newPersons);
+          setNotification(`Record of ${person.name} is deleted`);
+          setTimeout(() => setNotification(null), 5000);
+        })
+        .catch(() => {
+          const newPersons = persons.filter((p) => p.id !== person.id);
+          updatePersons(newPersons);
+          setNotificationIsError(true);
+          setNotification(`Record of ${person.name} is already deleted`);
+          setTimeout(() => {
+            setNotificationIsError(false);
+            setNotification(null);
+          }, 5000);
+        });
     }
     return console.log(`Delete of ${person.name} cancelled`);
   };
