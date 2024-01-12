@@ -128,5 +128,6 @@ out
 .yarn/install-state.gz
 .pnp.*
 
-#REST extension requests
+#VS code extension files
 requests/
+.prettierrc

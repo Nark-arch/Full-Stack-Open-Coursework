@@ -42,8 +42,8 @@ if (argLength === 3) {
     number: process.argv[4],
   })
 
-  person.save().then(() => {
-    console.log('person added')
+  person.save().then((savedPerson) => {
+    console.log(`added ${savedPerson.name} number ${savedPerson.number}`)
     mongoose.connection.close()
   })
 }

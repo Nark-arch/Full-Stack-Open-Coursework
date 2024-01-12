@@ -26,10 +26,11 @@ const personSchema = new mongoose.Schema({
     minLength: 8,
     validate: {
       validator: (value) => {
-        const regex = /^\d+-\d+$/
+        const regex = /^\d{2,3}-\d+$/
         return regex.test(value)
       },
-      message: 'Number must be in the format: digits+"-"+digits',
+      message:
+        'Number must be formed of two parts that are separated by -, the first part with 2-3 numbers & second part also consisting of numbers',
     },
     required: true,
   },
