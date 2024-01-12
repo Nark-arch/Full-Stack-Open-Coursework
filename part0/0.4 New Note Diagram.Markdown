@@ -1,0 +1,37 @@
+```mermaid
+  sequenceDiagram 
+    participant browser
+    participant server
+    browser ->> server: POST https://studies.cs.helsinki.fi/exampleapp/new-note
+    activate server
+    note left of server: Creates a new note object
+    note left of server: attributes: POST request = content, timestamp = current timestamp
+    note left of server: object is added to notes array, redirects browser to make it reload
+    server -->> browser: HTTP Status 302, Redirect location /notes
+    deactivate server
+    note right of browser: Reloads notes page
+
+    
+    browser ->> server: GET https://studies.cs.helsinki.fi/exampleapp/notes
+    activate server
+    server-->>browser: HTML Document
+    deactivate server
+    note right of browser: reads that html file requires js & css files
+
+    browser ->> server: GET https://studies.cs.helsinki.fi/exampleapp/main.css
+    activate server
+    server-->> browser: The CSS file
+    deactivate server
+
+    browser ->> server: GET https://studies.cs.helsinki.fi/exampleapp/main.js
+    activate server
+    server-->>browser: The JS file
+    deactivate server
+    
+    note right of browser: browser runs js code which first fetches the JSON from server
+    browser ->> server: GET https://studies.cs.helsinki.fi/exampleapp/data.json
+    activate server
+    server -->> browser: application/json, charset=utf-8, [{"content":"aaaaa","date":"2023-09-08T16:54:04.539Z"},...]
+    deactivate server
+    note right of browser: Site with updated notes array is loaded by the JS from the json
+```
