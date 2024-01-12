@@ -74,15 +74,19 @@ const App = () => {
           );
           setTimeout(() => setNotification(null), 5000);
         })
-        .catch(() => {
-          setNotificationIsError(true);
-          setNotification(
-            `Record of ${person.name} has already been removed from the server`
-          );
-          setTimeout(() => {
-            setNotification(null);
-            setNotificationIsError(false);
-          }, 5000);
+        .catch((err) => {
+          if (err.response.status === 404) {
+            const newPersons = persons.filter((p) => p.id !== person.id);
+            updatePersons(newPersons);
+            setNotificationIsError(true);
+            setNotification(
+              `Record of ${person.name} has already been removed from the server`
+            );
+            setTimeout(() => {
+              setNotification(null);
+              setNotificationIsError(false);
+            }, 5000);
+          }
         });
     }
     setNotification(`Record of ${person.name} is unchanged`);
@@ -134,12 +138,20 @@ const App = () => {
 
   const handleDeletePerson = (person) => {
     if (window.confirm(`Delete ${person.name} ?`)) {
-      return personService.deleteEntry(person).then(() => {
-        const newPersons = persons.filter((p) => p.id !== person.id);
-        updatePersons(newPersons);
-        setNotification(`Record of ${person.name} is deleted`);
-        setTimeout(() => setNotification(null), 5000);
-      });
+      return personService
+        .deleteEntry(person)
+        .then(() => {
+          const newPersons = persons.filter((p) => p.id !== person.id);
+          updatePersons(newPersons);
+          setNotification(`Record of ${person.name} is deleted`);
+          setTimeout(() => setNotification(null), 5000);
+        })
+        .catch(() => {
+          const newPersons = persons.filter((p) => p.id !== person.id);
+          updatePersons(newPersons);
+          setNotification(`Record of ${person.name} is deleted`);
+          setTimeout(() => setNotification(null), 5000);
+        });
     }
     return console.log(`Delete of ${person.name} cancelled`);
   };
