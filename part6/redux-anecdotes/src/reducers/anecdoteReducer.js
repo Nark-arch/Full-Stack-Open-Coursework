@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 const anecdotesAtStart = [
   'If it hurts, do it more often',
   'Adding manpower to a late software project makes it later!',
@@ -21,20 +22,18 @@ const initialState = anecdotesAtStart.map(asObject)
 
 const anecdoteReducer = (state = initialState, action) => {
   switch (action.type) {
-  case 'ADD_ANECDOTE':
-    return state.concat(action.payload)
+    case 'ADD_ANECDOTE':
+      return state.concat(action.payload)
 
-  case 'VOTE_INCREMENT':
-    return state
-      .map((anecdote) =>
+    case 'VOTE_INCREMENT':
+      return state.map((anecdote) =>
         anecdote.id === action.payload.id
           ? { ...anecdote, votes: anecdote.votes + 1 }
           : anecdote
       )
-      .sort((a, b) => b.votes - a.votes)
 
-  default:
-    return state
+    default:
+      return state
   }
 }
 

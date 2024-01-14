@@ -20,14 +20,22 @@ const Anecdote = ({ anecdote }) => {
 }
 
 const AnecdoteList = () => {
-  const anecdotes = useSelector((state) => state)
+  const anecdotes = useSelector(({ anecdotes, filter }) => {
+    if (filter === '') {
+      return anecdotes
+    }
+    return anecdotes.filter((anecdote) =>
+      anecdote.content.toLowerCase().includes(filter.toLowerCase())
+    )
+  })
 
   return (
     <div>
-      <h2>Anecdotes</h2>
-      {anecdotes.map((anecdote) => (
-        <Anecdote key={anecdote.id} anecdote={anecdote} />
-      ))}
+      {anecdotes
+        .sort((a, b) => b.votes - a.votes)
+        .map((anecdote) => (
+          <Anecdote key={anecdote.id} anecdote={anecdote} />
+        ))}
     </div>
   )
 }
