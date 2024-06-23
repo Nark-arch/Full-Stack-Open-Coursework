@@ -1,21 +1,51 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { createBlog } from '../reducers/blogsReducer'
+import { setNotification } from '../reducers/notificationReducer'
+import { userLogout } from '../reducers/loginReducer'
 
-const BlogForm = ({ handleCreateBlog, children }) => {
+const BlogForm = ({ children, blogFormRef }) => {
+  const dispatch = useDispatch()
+
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
 
   const addBlog = async (event) => {
     event.preventDefault()
-    await handleCreateBlog({
+    const newBlog = {
       title: title,
       author: author,
       url: url,
-    })
+    }
+    try {
+      blogFormRef.current.toggleVisibility()
+      dispatch(createBlog(newBlog))
+      dispatch(
+        setNotification(
+          `a new blog ${newBlog.title} by ${newBlog.author} added`,
+          false,
+          5
+        )
+      )
+    } catch (error) {
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.error === 'token expired'
+      ) {
+        dispatch(setNotification('session has expired login again', true, 5))
+        dispatch(userLogout())
+      } else {
+        console.log(error)
+      }
+    }
+
     setAuthor('')
     setTitle('')
     setUrl('')
   }
+
   return (
     <div>
       {children}

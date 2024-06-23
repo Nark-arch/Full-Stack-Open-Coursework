@@ -1,8 +1,8 @@
-import PropTypes from 'prop-types'
 import { useState } from 'react'
+import { useSelector } from 'react-redux'
 
-const Blog = (props) => {
-  const blog = props.blog
+const Blog = ({ blog, handleUpdateBlog, handleRemoveBlog }) => {
+  const user = useSelector((state) => state.login)
 
   const blogStyle = {
     paddingTop: 10,
@@ -16,22 +16,20 @@ const Blog = (props) => {
 
   const addLike = async (event) => {
     event.preventDefault()
-    await props.handleUpdateBlog(
-      {
-        user: blog.user.id,
-        likes: blog.likes + 1,
-        author: blog.author,
-        title: blog.title,
-        url: blog.url,
-      },
-      blog.id
-    )
+    const modifiedBlog = {
+      user: blog.user.id,
+      likes: blog.likes + 1,
+      author: blog.author,
+      title: blog.title,
+      url: blog.url,
+    }
+    await handleUpdateBlog(modifiedBlog, blog.id)
   }
 
-  const removeBlog = (event) => {
+  const blogRemove = async (event) => {
     event.preventDefault()
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
-      props.handleRemoveBlog(blog.id)
+      handleRemoveBlog(blog.id)
     }
   }
 
@@ -50,8 +48,8 @@ const Blog = (props) => {
             likes {blog.likes} <button onClick={addLike}>like</button>
           </p>
           <p>{blog.user.name}</p>
-          {blog.user.username === props.user.username ? (
-            <button onClick={removeBlog}>remove</button>
+          {blog.user.username === user.username ? (
+            <button onClick={blogRemove}>remove</button>
           ) : null}
         </div>
       ) : null}
@@ -59,10 +57,4 @@ const Blog = (props) => {
   )
 }
 
-Blog.propTypes = {
-  user: PropTypes.object.isRequired,
-  blog: PropTypes.object.isRequired,
-  handleRemoveBlog: PropTypes.func.isRequired,
-  handleUpdateBlog: PropTypes.func.isRequired,
-}
 export default Blog

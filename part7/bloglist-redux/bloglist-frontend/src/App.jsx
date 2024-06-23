@@ -1,157 +1,45 @@
-import { useState, useEffect, useRef } from 'react'
-import { setNotification } from './reducers/notificationReducer'
+import { useEffect, useRef } from 'react'
+import { useDispatch } from 'react-redux'
 
 import Notification from './components/Notification'
-import Blog from './components/Blog'
-
-import blogService from './services/blogs'
-import loginService from './services/login'
-import LoginForm from './components/LoginForm'
+import LoginForm from './components/LoginForm.jsx'
 import BlogForm from './components/BlogForm'
+import BlogList from './components/BlogList.jsx'
 import Togglable from './components/Togglable'
 
+import { initializeLogin, userLogout } from './reducers/loginReducer.js'
+import { initializeBlogs } from './reducers/blogsReducer.js'
+import { useSelector } from 'react-redux'
+
 const App = () => {
-  const [blogs, setBlogs] = useState([])
-
-  const [user, setUser] = useState(null)
-
-  const [errorMessage, setErrorMessage] = useState(null)
-  const [isError, setIsError] = useState(false)
+  const dispatch = useDispatch()
+  const user = useSelector((state) => state.login)
 
   //useEffect
   useEffect(() => {
-    async function fetchBlogs() {
-      const blogs = await blogService.getAll()
-      blogs.sort((a, b) => b.likes - a.likes)
-      setBlogs(blogs)
-    }
-    fetchBlogs()
-  }, [])
-
-  useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
-    if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON)
-      setUser(user)
-      blogService.setToken(user.token)
-    }
-  }, [])
+    dispatch(initializeBlogs())
+    dispatch(initializeLogin())
+  }, [dispatch])
 
   //useRef
   const blogFormRef = useRef()
 
   //eventHandlers
-  const handleLogin = async (user) => {
-    try {
-      const loggedInUser = await loginService.login(user)
-      window.localStorage.setItem(
-        'loggedBlogappUser',
-        JSON.stringify(loggedInUser)
-      )
-      blogService.setToken(loggedInUser.token)
-      setUser(loggedInUser)
-      return
-    } catch (error) {
-      setNotification(error.response.data.error, true, 5)
-    }
-  }
-
   const handleLogout = async (event) => {
     event.preventDefault()
-    window.localStorage.removeItem('loggedBlogappUser')
-    setUser(null)
-  }
-
-  const handleCreateBlog = async (newBlog) => {
-    try {
-      const response = await blogService.create(newBlog)
-      blogFormRef.current.toggleVisibility()
-      const updatedBlogs = blogs
-        .concat(response)
-        .sort((a, b) => b.likes - a.likes)
-      setBlogs(updatedBlogs)
-      setErrorMessage(`a new blog ${newBlog.title} by ${newBlog.author} added`)
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
-    } catch (error) {
-      if (
-        error.response &&
-        error.response.data &&
-        error.response.data.error === 'token expired'
-      ) {
-        setIsError(true)
-        setErrorMessage('session has expired login again')
-        setUser(null)
-        setTimeout(() => {
-          setErrorMessage(null)
-          setIsError(false)
-        }, 5000)
-      } else {
-        console.log(error)
-      }
-    }
-  }
-
-  const handleRemoveBlog = async (id) => {
-    try {
-      await blogService.remove(id)
-      const updatedBlogs = blogs.filter((blog) => blog.id !== id)
-      setBlogs(updatedBlogs)
-    } catch (error) {
-      if (
-        error.response &&
-        error.response.data &&
-        error.response.data.error === 'token expired'
-      ) {
-        setIsError(true)
-        setErrorMessage('session has expired login again')
-        setUser(null)
-        setTimeout(() => {
-          setErrorMessage(null)
-          setIsError(false)
-        }, 5000)
-      } else {
-        console.log(error)
-      }
-    }
-  }
-
-  const handleUpdateBlog = async (modifiedBlog, id) => {
-    try {
-      const response = await blogService.update(modifiedBlog, id)
-      const updatedBlogs = blogs
-        .map((blog) => (blog.id === response.id ? response : blog))
-        .sort((a, b) => b.likes - a.likes)
-      setBlogs(updatedBlogs)
-    } catch (error) {
-      if (
-        error.response &&
-        error.response.data &&
-        error.response.data.error === 'token expired'
-      ) {
-        setIsError(true)
-        setErrorMessage('session has expired login again')
-        setUser(null)
-        setTimeout(() => {
-          setErrorMessage(null)
-          setIsError(false)
-        }, 5000)
-      } else {
-        console.log(error)
-      }
-    }
+    dispatch(userLogout())
   }
 
   //return
   if (user === null) {
     return (
-      <LoginForm handleLogin={handleLogin}>
+      <LoginForm>
         <h2>Log in to application</h2>
-        <Notification message={errorMessage} isError={isError} />
+        <Notification />
       </LoginForm>
     )
   }
+
   return (
     <div>
       <h2>blogs</h2>
@@ -165,21 +53,11 @@ const App = () => {
         hideButtonLabel="cancel"
         ref={blogFormRef}
       >
-        <BlogForm handleCreateBlog={handleCreateBlog}>
+        <BlogForm blogFormRef={blogFormRef}>
           <h2>create new</h2>
         </BlogForm>
       </Togglable>
-      <div className="blogs-list">
-        {blogs.map((blog) => (
-          <Blog
-            key={blog.id}
-            blog={blog}
-            user={user}
-            handleUpdateBlog={handleUpdateBlog}
-            handleRemoveBlog={handleRemoveBlog}
-          />
-        ))}
-      </div>
+      <BlogList />
     </div>
   )
 }
