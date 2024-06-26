@@ -1,8 +1,9 @@
-import PropTypes from 'prop-types'
 import { useState } from 'react'
+import { useLoginValue } from '../contexts/LoginContext'
 
-const Blog = (props) => {
-  const blog = props.blog
+const Blog = ({ blog, removeBlogMutation, updateBlogMutation }) => {
+
+  const user = useLoginValue()
 
   const blogStyle = {
     paddingTop: 10,
@@ -12,28 +13,28 @@ const Blog = (props) => {
     marginBottom: 5,
   }
 
-  const [showDetails, setShowDetails] = useState(false)
-
   const addLike = async (event) => {
     event.preventDefault()
-    await props.handleUpdateBlog(
-      {
+    updateBlogMutation.mutate({
+      updateObject: {
         user: blog.user.id,
         likes: blog.likes + 1,
         author: blog.author,
         title: blog.title,
         url: blog.url,
       },
-      blog.id
-    )
+      id: blog.id,
+    })
   }
 
   const removeBlog = (event) => {
     event.preventDefault()
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
-      props.handleRemoveBlog(blog.id)
+      removeBlogMutation.mutate(blog.id)
     }
   }
+
+  const [showDetails, setShowDetails] = useState(false)
 
   return (
     <div style={blogStyle} className="blog">
@@ -50,7 +51,7 @@ const Blog = (props) => {
             likes {blog.likes} <button onClick={addLike}>like</button>
           </p>
           <p>{blog.user.name}</p>
-          {blog.user.username === props.user.username ? (
+          {blog.user.username === user.username ? (
             <button onClick={removeBlog}>remove</button>
           ) : null}
         </div>
@@ -59,10 +60,4 @@ const Blog = (props) => {
   )
 }
 
-Blog.propTypes = {
-  user: PropTypes.object.isRequired,
-  blog: PropTypes.object.isRequired,
-  handleRemoveBlog: PropTypes.func.isRequired,
-  handleUpdateBlog: PropTypes.func.isRequired,
-}
 export default Blog

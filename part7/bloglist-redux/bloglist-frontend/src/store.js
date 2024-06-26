@@ -6,9 +6,9 @@ import loginReducer from './reducers/loginReducer'
 
 const store = configureStore({
   reducer: {
+    login: loginReducer,
     blogs: blogsReducer,
     notification: notificationReducer,
-    login: loginReducer
   },
 })
 
