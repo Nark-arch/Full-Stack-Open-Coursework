@@ -9,6 +9,10 @@ const blogSchema = new mongoose.Schema({
   title: r_string,
   author: String,
   url: r_string,
+  comments: {
+    type: [String],
+    default: [],
+  },
   likes: {
     type: Number,
     default: 0,

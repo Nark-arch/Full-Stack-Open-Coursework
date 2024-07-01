@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Routes, Route, useMatch, Navigate } from 'react-router-dom'
+import { Routes, Route, useMatch } from 'react-router-dom'
 
 import Menu from './components/Menu'
 import AnecdoteList from './components/AnecdoteList'
