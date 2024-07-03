@@ -2,6 +2,8 @@ import { useEffect } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 
+import Button from 'react-bootstrap/Button'
+
 import Users from './components/Users.jsx'
 import NavMenu from './components/NavMenu.jsx'
 import LoginForm from './components/LoginForm.jsx'
@@ -40,15 +42,15 @@ const App = () => {
   }
 
   return (
-    <div>
+    <div className="container">
       <NavMenu>
         {user.name} logged in{' '}
-        <button type="logout" onClick={handleLogout}>
-          logout
-        </button>
+        <Button variant="outline-danger" type="logout" onClick={handleLogout}>
+          Logout
+        </Button>
       </NavMenu>
       <Notification />
-      <h2>blog app</h2>
+      <h1>Blog App</h1>
       <Routes>
         <Route path="/users/*" element={<Users />} />
         <Route path="*" element={<BlogListAndForm />} />

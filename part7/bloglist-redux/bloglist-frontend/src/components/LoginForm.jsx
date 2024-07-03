@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { setNotification } from '../reducers/notificationReducer.js'
 import { userLogin } from '../reducers/loginReducer.js'
 
+import { Form, Button } from 'react-bootstrap'
+
 const LoginForm = ({ children }) => {
   const dispatch = useDispatch()
 
@@ -21,31 +23,36 @@ const LoginForm = ({ children }) => {
   }
 
   return (
-    <div>
+    <div className="container">
       {children}
-      <form onSubmit={doLogin} className="login-form">
-        <div>
-          username{'  '}
-          <input
+      <Form onSubmit={doLogin} className="login-form">
+        <Form.Group>
+          <Form.Label>Username</Form.Label>
+          <Form.Control
             type="text"
             value={username}
             id="username"
             onChange={({ target }) => setUsername(target.value)}
           />
-          <div>
-            passsword{'  '}
-            <input
-              type="text"
-              value={password}
-              id="password"
-              onChange={({ target }) => setPassword(target.value)}
-            />
-          </div>
-          <button id="login-button" type="submit">
-            login
-          </button>
-        </div>
-      </form>
+        </Form.Group>
+        <Form.Group>
+          <Form.Label>Passsword</Form.Label>
+          <Form.Control
+            type="text"
+            value={password}
+            id="password"
+            onChange={({ target }) => setPassword(target.value)}
+          />
+        </Form.Group>
+        <Button
+          variant="outline-success"
+          style={{ marginTop: 10 }}
+          id="login-button"
+          type="submit"
+        >
+          login
+        </Button>
+      </Form>
     </div>
   )
 }

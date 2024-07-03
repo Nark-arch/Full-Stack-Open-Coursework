@@ -5,6 +5,7 @@ import { userLogout } from '../reducers/loginReducer'
 import { addComment } from '../reducers/blogsReducer'
 
 import CommentForm from './CommentForm'
+import ListGroup from 'react-bootstrap/ListGroup'
 
 const Comments = ({ blog }) => {
   const dispatch = useDispatch()
@@ -27,13 +28,15 @@ const Comments = ({ blog }) => {
 
   return (
     <>
-      <h2>comments</h2>
+      <h2>Comments</h2>
       <CommentForm handleAddComment={handleAddComment} />
-      <ul>
+      <ListGroup as="ul" variant="flush">
         {blog.comments.map((comment, index) => (
-          <li key={index}>{comment}</li>
+          <ListGroup.Item as="li" key={index}>
+            {comment}
+          </ListGroup.Item>
         ))}
-      </ul>
+      </ListGroup>
     </>
   )
 }

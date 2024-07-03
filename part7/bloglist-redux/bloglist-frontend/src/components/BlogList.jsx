@@ -5,6 +5,8 @@ import { setNotification } from '../reducers/notificationReducer'
 import { userLogout } from '../reducers/loginReducer'
 import { Route, Routes, useMatch } from 'react-router-dom'
 
+import ListGroup from 'react-bootstrap/ListGroup'
+
 import Blog from './Blog'
 import Togglable from './Togglable'
 import BlogForm from './BlogForm'
@@ -83,12 +85,12 @@ const BlogList = () => {
   return (
     <div>
       <Togglable
-        showButtonLabel="new blog"
-        hideButtonLabel="cancel"
+        showButtonLabel="New Blog"
+        hideButtonLabel="Cancel"
         ref={blogFormRef}
       >
         <BlogForm blogFormRef={blogFormRef}>
-          <h2>create new</h2>
+          <h2>Create New</h2>
         </BlogForm>
       </Togglable>
       <Routes>
@@ -104,9 +106,11 @@ const BlogList = () => {
         <Route
           path="/"
           element={
-            blogs
-              ? blogs.map((blog) => <Blog key={blog.id} blog={blog} />)
-              : null
+            <ListGroup as="ul" variant="flush">
+              {blogs
+                ? blogs.map((blog) => <Blog key={blog.id} blog={blog} />)
+                : null}
+            </ListGroup>
           }
         />
       </Routes>

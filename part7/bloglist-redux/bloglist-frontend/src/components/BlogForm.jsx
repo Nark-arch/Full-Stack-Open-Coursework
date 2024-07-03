@@ -4,6 +4,8 @@ import { createBlog } from '../reducers/blogsReducer'
 import { setNotification } from '../reducers/notificationReducer'
 import { userLogout } from '../reducers/loginReducer'
 
+import { Form, Button } from 'react-bootstrap'
+
 const BlogForm = ({ children, blogFormRef }) => {
   const dispatch = useDispatch()
 
@@ -20,7 +22,7 @@ const BlogForm = ({ children, blogFormRef }) => {
     }
     try {
       blogFormRef.current.toggleVisibility()
-      dispatch(createBlog(newBlog))
+      await dispatch(createBlog(newBlog))
       dispatch(
         setNotification(
           `a new blog ${newBlog.title} by ${newBlog.author} added`,
@@ -49,41 +51,46 @@ const BlogForm = ({ children, blogFormRef }) => {
   return (
     <div>
       {children}
-      <form onSubmit={addBlog} className="blog-form">
-        <div>
-          title{'  '}
-          <input
+      <Form onSubmit={addBlog} className="blog-form">
+        <Form.Group>
+          <Form.Label>Title</Form.Label>
+          <Form.Control
             type="text"
             id="title"
             value={title}
             onChange={({ target }) => setTitle(target.value)}
             placeholder="enter title here"
           />
-        </div>
-        <div>
-          author{'  '}
-          <input
+        </Form.Group>
+        <Form.Group>
+          <Form.Label>Author</Form.Label>
+          <Form.Control
             type="text"
             id="author"
             value={author}
             onChange={({ target }) => setAuthor(target.value)}
             placeholder="enter author here"
           />
-        </div>
-        <div>
-          url{'  '}
-          <input
+        </Form.Group>
+        <Form.Group>
+          <Form.Label>URL</Form.Label>
+          <Form.Control
             type="text"
             id="url"
             value={url}
             onChange={({ target }) => setUrl(target.value)}
             placeholder="enter url here"
           />
-        </div>
-        <button id="create-blog-button" type="submit">
-          create
-        </button>
-      </form>
+        </Form.Group>
+        <Button
+          variant="outline-success"
+          style={{ marginTop: 10 }}
+          id="create-blog-button"
+          type="submit"
+        >
+          Create
+        </Button>
+      </Form>
     </div>
   )
 }

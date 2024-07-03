@@ -1,3 +1,5 @@
+import { Button } from 'react-bootstrap'
+
 const BlogDetailed = ({ blog, addLike }) => {
   return (
     <>
@@ -5,9 +7,9 @@ const BlogDetailed = ({ blog, addLike }) => {
         {blog.title} {blog.author}
       </h1>
       <a href={blog.url}>{blog.url}</a>
-      <p>
-        {blog.likes} likes <button onClick={addLike}>like</button>
-      </p>
+      <h5>
+        {blog.likes} likes <Button onClick={addLike}>like</Button>
+      </h5>
       <p>added by {blog.user.name}</p>
     </>
   )
