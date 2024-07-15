@@ -1,0 +1,25 @@
+{
+  "name": "library-graphql",
+  "version": "1.0.0",
+  "description": "backend for a small library using graphql",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ksn-ark/Full-Stack-Open-Coursework/part8/library-graphql"
+  },
+  "keywords": [
+    "graphql",
+    "apollo"
+  ],
+  "author": "ksn-ark",
+  "license": "MIT",
+  "dependencies": {
+    "@apollo/server": "^4.10.4",
+    "graphql": "^16.9.0",
+    "nodemon": "^3.1.4"
+  }
+}
