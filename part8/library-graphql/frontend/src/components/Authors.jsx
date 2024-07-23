@@ -2,7 +2,7 @@ import { useQuery } from '@apollo/client'
 import { ALL_AUTHORS } from '../queries'
 import AuthorBirthForm from './AuthorBirthForm'
 
-const Authors = ({ show }) => {
+const Authors = ({ show, token }) => {
   const result = useQuery(ALL_AUTHORS, {
     skip: !show,
   })
@@ -35,7 +35,7 @@ const Authors = ({ show }) => {
           ))}
         </tbody>
       </table>
-      <AuthorBirthForm authors={authors} />
+      {token ? <AuthorBirthForm authors={authors} /> : null}
     </div>
   )
 }
