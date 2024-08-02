@@ -7,20 +7,12 @@ const User = require('./models/user')
 const jwt = require('jsonwebtoken')
 
 const resolvers = {
-  Author: {
-    bookCount: async (root) => {
-      const books = await Book.find({}).populate('author')
-      // return sum of all matching books
-      return books.reduce(
-        (sum, book) => (book.author.name === root.name ? sum + 1 : sum),
-        0,
-      )
-    },
-  },
   Query: {
     me: async (_root, _args, { currentUser }) => currentUser,
     authorCount: async () => Author.collection.countDocuments(),
-    allAuthors: async () => Author.find({}),
+    allAuthors: async () => {
+      return Author.find({})
+    },
     bookCount: async () => Book.collection.countDocuments(),
     allBooks: async (_, args) => {
       const filter = {}
@@ -91,6 +83,9 @@ const resolvers = {
             },
           })
         })
+      } else {
+        author.bookCount += 1
+        await author.save()
       }
 
       const book = new Book({ ...args, author: author })
