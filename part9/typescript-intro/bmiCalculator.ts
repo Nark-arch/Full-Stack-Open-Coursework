@@ -1,17 +1,4 @@
-interface BMIValues {
-  height: number;
-  weight: number;
-}
-
-const parseArguments = (args: string[]): BMIValues => {
-  if (!isNaN(Number(args[2])) && !isNaN(Number(args[3]))) {
-    return {
-      height: Number(args[2]),
-      weight: Number(args[3]),
-    };
-  } else {
-  }
-};
+import { parseNumArguments } from './utils';
 
 const bmiResultArray = [
   'Underweight (Severe thinness)',
@@ -58,7 +45,7 @@ const calculateBmi = (height: number, weight: number): bmiResult => {
 };
 
 try {
-  const { height, weight } = parseArguments(process.argv);
+  const [height, weight] = parseNumArguments(process.argv.slice(2), 2);
   console.log(calculateBmi(height, weight));
 } catch (error: unknown) {
   let errorMessage = 'Something bad happened.';

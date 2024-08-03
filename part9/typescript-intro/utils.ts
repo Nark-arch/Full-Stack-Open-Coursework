@@ -1,4 +1,7 @@
-export const parseArguments = (args: string[], argCount: number): number[] => {
+export const parseNumArguments = (
+  args: string[],
+  argCount: number
+): number[] => {
   if (args.length < argCount) throw new Error('Not enough arguments');
   if (args.length > argCount) throw new Error('Too many arguments');
   const numArgs: number[] = [];
@@ -8,6 +11,5 @@ export const parseArguments = (args: string[], argCount: number): number[] => {
     }
     numArgs.push(Number(args[i]));
   }
-
   return numArgs;
 };

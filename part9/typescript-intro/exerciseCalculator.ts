@@ -1,6 +1,6 @@
-type rating = 1 | 2 | 3;
+import { parseNumArguments } from './utils';
 
-const target: number = 2;
+type rating = 1 | 2 | 3;
 
 const ratingDescriptionValues: string[] = [
   'poor effort',
@@ -17,7 +17,11 @@ interface ExerciseResults {
   target: number;
   average: number;
 }
-const calculateExercises = (dailyHours: number[]): ExerciseResults => {
+
+const calculateExercises = (
+  target: number,
+  dailyHours: number[]
+): ExerciseResults => {
   let totalHours: number = 0;
   const periodLength: number = dailyHours.length;
   let trainingDays: number = 0;
@@ -51,4 +55,16 @@ const calculateExercises = (dailyHours: number[]): ExerciseResults => {
   };
 };
 
-console.log(calculateExercises([3, 0, 2, 4.5, 0, 3, 1]));
+try {
+  const [target, ...dailyHours]: number[] = parseNumArguments(
+    process.argv.slice(2),
+    process.argv.length - 2
+  );
+  console.log(calculateExercises(target, dailyHours));
+} catch (error: unknown) {
+  let errorMessage = 'Something bad happened.';
+  if (error instanceof Error) {
+    errorMessage += ' Error: ' + error.message;
+  }
+  console.log(errorMessage);
+}
