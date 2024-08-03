@@ -1,3 +1,18 @@
+interface BMIValues {
+  height: number;
+  weight: number;
+}
+
+const parseArguments = (args: string[]): BMIValues => {
+  if (!isNaN(Number(args[2])) && !isNaN(Number(args[3]))) {
+    return {
+      height: Number(args[2]),
+      weight: Number(args[3]),
+    };
+  } else {
+  }
+};
+
 const bmiResultArray = [
   'Underweight (Severe thinness)',
   'Underweight (Moderate thinness)',
@@ -6,40 +21,49 @@ const bmiResultArray = [
   'Overweight (Class I)',
   'Obese (Class II)',
   'Obese (Class III)',
-]
+];
 
-type bmiResult = (typeof bmiResultArray)[number]
+type bmiResult = (typeof bmiResultArray)[number];
 
 const calculateBmi = (height: number, weight: number): bmiResult => {
   if (height === 0) {
-    throw new Error('Height cannot be zero, cannot divide by zero')
+    throw new Error('Height cannot be zero, cannot divide by zero');
   }
-  const metreHeight: number = height / 100
-  const bmi: number = weight / metreHeight ** 2
+  const metreHeight: number = height / 100;
+  const bmi: number = weight / metreHeight ** 2;
   if (bmi < 16) {
-    return bmiResultArray[0]
+    return bmiResultArray[0];
   }
   if (bmi < 17) {
-    return bmiResultArray[1]
+    return bmiResultArray[1];
   }
   if (bmi < 18.5) {
-    return bmiResultArray[2]
+    return bmiResultArray[2];
   }
   if (bmi < 25) {
-    return bmiResultArray[3]
+    return bmiResultArray[3];
   }
   if (bmi < 30) {
-    return bmiResultArray[4]
+    return bmiResultArray[4];
   }
   if (bmi < 35) {
-    return bmiResultArray[5]
+    return bmiResultArray[5];
   }
   if (bmi < 40) {
-    return bmiResultArray[6]
+    return bmiResultArray[6];
   }
   if (bmi > 40) {
-    return bmiResultArray[7]
+    return bmiResultArray[7];
   }
-}
+};
 
-console.log(calculateBmi(180, 74))
+try {
+  const { height, weight } = parseArguments(process.argv);
+  console.log(calculateBmi(height, weight));
+} catch (error: unknown) {
+  let errorMessage = 'Something bad happened.';
+  if (error instanceof Error) {
+    errorMessage += ' Error: ' + error.message;
+  }
+  console.log(errorMessage);
+}
