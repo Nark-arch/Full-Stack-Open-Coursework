@@ -1,3 +1,5 @@
+import { ParsedQs } from 'qs';
+
 export const parseNumArguments = (
   args: string[],
   argCount: number
@@ -12,4 +14,16 @@ export const parseNumArguments = (
     numArgs.push(Number(args[i]));
   }
   return numArgs;
+};
+
+export interface bmiQuery {
+  height: string;
+  weight: string;
+}
+
+export const parseToBmiQuery = (query: ParsedQs): bmiQuery => {
+  if (!query) throw new Error('query undefined');
+  if (typeof query.height !== 'string') throw new Error('missing height');
+  if (typeof query.weight !== 'string') throw new Error('missing weight');
+  return { height: query.height, weight: query.weight };
 };
