@@ -1,2 +1,3 @@
 # Full Stack Open Coursework
-All Exercises for the full stack open course. 
+
+All Exercises for the full stack open course.
