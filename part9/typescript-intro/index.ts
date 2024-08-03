@@ -16,7 +16,7 @@ app.get('/bmi', (req, res) => {
   try {
     const bmiQuery: bmiQuery = parseToBmiQuery(req.query);
     const [height, weight]: number[] = parseNumArguments(
-      Object.values(bmiQuery),
+      [bmiQuery.height, bmiQuery.weight],
       2
     );
     res.json({ weight, height, bmi: calculateBmi(height, weight) });
