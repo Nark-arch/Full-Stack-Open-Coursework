@@ -22,8 +22,35 @@ export interface bmiQuery {
 }
 
 export const parseToBmiQuery = (query: ParsedQs): bmiQuery => {
-  if (!query) throw new Error('query undefined');
+  if (!query) throw new Error('no query');
   if (typeof query.height !== 'string') throw new Error('missing height');
   if (typeof query.weight !== 'string') throw new Error('missing weight');
   return { height: query.height, weight: query.weight };
+};
+
+export interface exercisesQuery {
+  daily_exercises: number[];
+  target: number;
+}
+
+export const parseToExerciseQuery = (requestBody: unknown): exercisesQuery => {
+  if (!requestBody) throw new Error('missing request body');
+  if (typeof requestBody !== 'object') throw new Error('Invalid request body');
+
+  if (!('target' in requestBody)) throw new Error('missing target');
+  if (!('daily_exercises' in requestBody))
+    throw new Error('missing daily exercises');
+
+  if (typeof requestBody.target !== 'number')
+    throw new Error('target is not a number');
+
+  if (!Array.isArray(requestBody.daily_exercises))
+    throw new Error('exercises is not an array');
+  if (!requestBody.daily_exercises.every((e) => typeof e === 'number'))
+    throw new Error('exercises is not an array of numbers');
+
+  return {
+    daily_exercises: requestBody.daily_exercises,
+    target: requestBody.target,
+  };
 };

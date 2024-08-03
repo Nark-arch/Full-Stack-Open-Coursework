@@ -1,11 +1,19 @@
 import express from 'express';
 import qs from 'qs';
-import { bmiQuery, parseToBmiQuery, parseNumArguments } from './utils';
+import {
+  bmiQuery,
+  parseToBmiQuery,
+  parseNumArguments,
+  parseToExerciseQuery,
+  exercisesQuery,
+} from './utils';
 import calculateBmi from './calculateBmi';
+import calculateExercises from './calculateExercises';
 
 const app = express();
 
 app.set('query parser', (str: string) => qs.parse(str));
+app.use(express.json());
 
 app.get('/hello', (req, res) => {
   console.log(req.query);
@@ -25,6 +33,20 @@ app.get('/bmi', (req, res) => {
       res
         .status(400)
         .json({ error: `Invalid query parameters: ${error.message}` });
+  }
+});
+
+app.post('/exercises', (req, res) => {
+  try {
+    const exerciseQuery: exercisesQuery = parseToExerciseQuery(req.body);
+    res.send(
+      calculateExercises(exerciseQuery.target, exerciseQuery.daily_exercises)
+    );
+  } catch (error) {
+    if (error instanceof Error)
+      res
+        .status(400)
+        .json({ error: `Invalid request parameters: ${error.message}` });
   }
 });
 
