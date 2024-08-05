@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
 import { DiaryEntry } from './utils/types'
 import diaryService from './services/diaryService'
-import Entry from './components/Entry'
+import DiaryEntries from './components/DiaryEntries'
+import DiaryForm from './components/DiaryForm'
 
-function App() {
+const App = () => {
   const [diaryEntries, setDiaryEntries] = useState<DiaryEntry[]>([])
   useEffect(() => {
     diaryService.getDiaries().then((data) => {
@@ -13,12 +14,11 @@ function App() {
 
   return (
     <div>
-      <h1> Diary Entries </h1>
-      <ul>
-        {diaryEntries.map((diaryEntry) => (
-          <Entry entry={diaryEntry} />
-        ))}
-      </ul>
+      <DiaryForm
+        diaryEntries={diaryEntries}
+        setDiaryEntries={setDiaryEntries}
+      />
+      <DiaryEntries diaryEntries={diaryEntries} />{' '}
     </div>
   )
 }
