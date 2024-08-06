@@ -18,7 +18,7 @@ const App = () => {
         diaryEntries={diaryEntries}
         setDiaryEntries={setDiaryEntries}
       />
-      <DiaryEntries diaryEntries={diaryEntries} />{' '}
+      <DiaryEntries diaryEntries={diaryEntries} />
     </div>
   )
 }

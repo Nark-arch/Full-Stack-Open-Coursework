@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import diaryService from '../services/diaryService'
-import { DiaryEntry, NewDiaryEntry, Visibility, Weather } from '../utils/types'
+import { DiaryEntry } from '../utils/types'
+import Notify from './Notify'
 
 const DiaryForm = ({
   diaryEntries,
@@ -14,53 +15,62 @@ const DiaryForm = ({
   const [weather, setWeather] = useState('')
   const [comment, setComment] = useState('')
 
-  const createDiary = (event: React.SyntheticEvent) => {
-    const newDiaryEntry: NewDiaryEntry = {
+  const [errorMessage, setErrorMessage] = useState(null)
+
+  const createDiary = async (event: React.SyntheticEvent) => {
+    const newDiaryEntry = {
       date: date,
-      visibility: visibility as Visibility,
-      weather: weather as Weather,
+      visibility: visibility,
+      weather: weather,
+      comment: comment,
     }
 
-    if (comment) newDiaryEntry.comment = comment
-
     event.preventDefault()
-    diaryService
+    const addedEntry = await diaryService
       .createDiary(newDiaryEntry)
-      .then((data) => setDiaryEntries(diaryEntries.concat(data)))
+      .catch((error) => {
+        setErrorMessage(error.response.data.error)
+        setTimeout(() => setErrorMessage(null), 5000)
+      })
+
+    if (addedEntry) setDiaryEntries(diaryEntries.concat(addedEntry))
   }
 
   return (
-    <form onSubmit={createDiary}>
-      date :{' '}
-      <input
-        type="text"
-        value={date}
-        onChange={(event) => setDate(event.target.value)}
-      />{' '}
-      <br />
-      visibility :{' '}
-      <input
-        type="text"
-        value={visibility}
-        onChange={(event) => setVisibility(event.target.value)}
-      />{' '}
-      <br />
-      weather :{' '}
-      <input
-        type="text"
-        value={weather}
-        onChange={(event) => setWeather(event.target.value)}
-      />{' '}
-      <br />
-      comment :{' '}
-      <input
-        type="text"
-        value={comment}
-        onChange={(event) => setComment(event.target.value)}
-      />{' '}
-      <br />
-      <button type="submit">Add Entry</button>
-    </form>
+    <div>
+      <Notify message={errorMessage} />
+      <form onSubmit={createDiary}>
+        date :{' '}
+        <input
+          type="text"
+          value={date}
+          onChange={(event) => setDate(event.target.value)}
+        />{' '}
+        <br />
+        visibility :{' '}
+        <input
+          type="text"
+          value={visibility}
+          onChange={(event) => setVisibility(event.target.value)}
+        />{' '}
+        <br />
+        weather :{' '}
+        <input
+          type="text"
+          value={weather}
+          onChange={(event) => setWeather(event.target.value)}
+        />{' '}
+        <br />
+        comment :{' '}
+        <input
+          type="text"
+          value={comment}
+          onChange={(event) => setComment(event.target.value)}
+        />{' '}
+        <br />
+        <button type="submit">Add Entry</button>
+      </form>
+    </div>
   )
 }
 
