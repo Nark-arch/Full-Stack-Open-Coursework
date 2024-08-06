@@ -1,11 +1,18 @@
 import express from 'express';
+
 import patientsService from '../services/patientsService';
 import { toNewPatient } from '../utils';
 
 const patientsRouter = express.Router();
 
 patientsRouter.get('/', (_req, res) => {
-  res.send(patientsService.getNoSSNPatients());
+  res.send(patientsService.getNonSensitivePatients());
+});
+
+patientsRouter.get('/:id', (req, res) => {
+  const id = req.params.id;
+  const requiredPatient = patientsService.findPatientById(id);
+  requiredPatient ? res.send(requiredPatient) : res.sendStatus(404);
 });
 
 patientsRouter.post('/', (req, res) => {

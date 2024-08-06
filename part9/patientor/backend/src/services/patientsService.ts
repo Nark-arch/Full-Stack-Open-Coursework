@@ -1,13 +1,18 @@
 import patients from '../../data/patients';
-import { NewPatient, NoSSNPatient, Patient } from '../types';
 import { v1 as uuid } from 'uuid';
+import { NewPatient, NonSensitivePatient, Patient } from '../types';
+
 const getPatients = (): Patient[] => {
   return patients;
 };
 
-const getNoSSNPatients = (): NoSSNPatient[] => {
+const getNonSensitivePatients = (): NonSensitivePatient[] => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  return patients.map(({ ssn, ...rest }) => rest);
+  return patients.map(({ ssn, entries, ...rest }) => rest);
+};
+
+const findPatientById = (id: string): Patient | undefined => {
+  return patients.find((patient) => patient.id === id);
 };
 
 const addPatient = (newPatient: NewPatient): Patient => {
@@ -16,4 +21,9 @@ const addPatient = (newPatient: NewPatient): Patient => {
   return patient;
 };
 
-export default { getPatients, addPatient, getNoSSNPatients };
+export default {
+  getPatients,
+  getNonSensitivePatients,
+  findPatientById,
+  addPatient,
+};
