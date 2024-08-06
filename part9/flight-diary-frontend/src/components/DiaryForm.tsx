@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import diaryService from '../services/diaryService'
-import { DiaryEntry } from '../utils/types'
+import { DiaryEntry, NewDiaryEntry, Visibility, Weather } from '../utils/types'
 import Notify from './Notify'
 
 const DiaryForm = ({
@@ -11,14 +11,14 @@ const DiaryForm = ({
   setDiaryEntries: React.Dispatch<React.SetStateAction<DiaryEntry[]>>
 }) => {
   const [date, setDate] = useState('')
-  const [visibility, setVisibility] = useState('')
-  const [weather, setWeather] = useState('')
+  const [visibility, setVisibility] = useState<Visibility>(Visibility.Great)
+  const [weather, setWeather] = useState<Weather>(Weather.Sunny)
   const [comment, setComment] = useState('')
 
   const [errorMessage, setErrorMessage] = useState(null)
 
   const createDiary = async (event: React.SyntheticEvent) => {
-    const newDiaryEntry = {
+    const newDiaryEntry: NewDiaryEntry = {
       date: date,
       visibility: visibility,
       weather: weather,
@@ -42,24 +42,38 @@ const DiaryForm = ({
       <form onSubmit={createDiary}>
         date :{' '}
         <input
-          type="text"
+          type="date"
           value={date}
           onChange={(event) => setDate(event.target.value)}
-        />{' '}
+        />
         <br />
         visibility :{' '}
-        <input
-          type="text"
-          value={visibility}
-          onChange={(event) => setVisibility(event.target.value)}
-        />{' '}
+        {Object.values(Visibility).map((value) => (
+          <label key={value}>
+            {value}
+            <input
+              name="visibility"
+              type="radio"
+              checked={visibility === value}
+              value={value}
+              onChange={() => setVisibility(value)}
+            />
+          </label>
+        ))}
         <br />
         weather :{' '}
-        <input
-          type="text"
-          value={weather}
-          onChange={(event) => setWeather(event.target.value)}
-        />{' '}
+        {Object.values(Weather).map((value) => (
+          <label key={value}>
+            {value}
+            <input
+              name="weather"
+              type="radio"
+              checked={weather === value}
+              value={value}
+              onChange={() => setWeather(value)}
+            />
+          </label>
+        ))}
         <br />
         comment :{' '}
         <input
