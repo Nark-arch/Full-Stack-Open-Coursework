@@ -1,0 +1,6 @@
+[submodule "part9/patientor/part9/patientor/patientor-frontend"]
+	path = part9/patientor/part9/patientor/patientor-frontend
+	url = https://github.com/ksn-ark/patientor-frontend.git
+[submodule "part9/patientor/patientor-frontend"]
+	path = part9/patientor/patientor-frontend
+	url = https://github.com/ksn-ark/patientor-frontend.git
