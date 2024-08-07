@@ -1,25 +1,27 @@
 import { Diagnosis, Discharge, SickLeave } from '../types';
 import { isDate, isObjKey, isString } from './isHelpers';
 
-export const fieldParser = <T>(
+export const fieldParser = <T, K>(
   obj: object,
-  field: string,
+  field: keyof K,
   validator: (value: unknown) => value is T
 ): T => {
-  if (!isObjKey(field, obj)) throw new Error(`${field} missing from request`);
-  if (!validator(obj[field])) throw new Error(`${field} is malformmatted`);
+  if (!isObjKey(field, obj))
+    throw new Error(`${String(field)} missing from request`);
+  if (!validator(obj[field]))
+    throw new Error(`${String(field)} is malformmatted`);
 
-  return obj[field] as T;
+  return obj[field];
 };
 
 export const parseDischarge = (value: object): Discharge => ({
-  date: fieldParser(value, 'date', isDate),
-  criteria: fieldParser(value, 'criteria', isString),
+  date: fieldParser<string, Discharge>(value, 'date', isDate),
+  criteria: fieldParser<string, Discharge>(value, 'criteria', isString),
 });
 
 export const parseSickLeave = (value: object): SickLeave => ({
-  startDate: fieldParser(value, 'startDate', isDate),
-  endDate: fieldParser(value, 'endDate', isString),
+  startDate: fieldParser<string, SickLeave>(value, 'startDate', isDate),
+  endDate: fieldParser<string, SickLeave>(value, 'endDate', isDate),
 });
 
 export const parseDiagnosisCodes = (

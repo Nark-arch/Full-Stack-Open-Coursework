@@ -1,4 +1,11 @@
-import { EntryType, HealthCheckRating, NewBaseEntry, NewEntry } from '../types';
+import {
+  EntryType,
+  HealthCheckEntry,
+  HealthCheckRating,
+  HospitalEntry,
+  NewEntry,
+  OccupationalHealthcareEntry,
+} from '../types';
 
 import {
   isDate,
@@ -20,51 +27,59 @@ export const toNewEntry = (requestBody: unknown): NewEntry => {
 
   const obj = requestBody;
 
-  const newBaseEntry: NewBaseEntry = {
-    description: fieldParser<string>(obj, 'description', isString),
-    date: fieldParser<string>(obj, 'date', isDate),
-    specialist: fieldParser<string>(obj, 'specialist', isString),
+  const type = fieldParser<EntryType, NewEntry>(obj, 'type', isEntryType);
+
+  const newEntry: NewEntry = {
+    description: fieldParser<string, NewEntry>(obj, 'description', isString),
+    date: fieldParser<string, NewEntry>(obj, 'date', isDate),
+    specialist: fieldParser<string, NewEntry>(obj, 'specialist', isString),
     diagnosisCodes: parseDiagnosisCodes(obj),
+    ...typeEntryFields(type, obj),
   };
 
-  const type = fieldParser<EntryType>(obj, 'type', isEntryType);
-
-  return toTypeEntry(type, newBaseEntry, obj);
+  return newEntry;
 };
 
-const toTypeEntry = (
-  type: EntryType,
-  newBaseEntry: NewBaseEntry,
-  obj: object
-): NewEntry => {
+const typeEntryFields = (type: EntryType, obj: object) => {
   switch (type) {
     case 'Hospital':
-      const dischObj = fieldParser<object>(obj, 'discharge', isObj);
-      const discharge = parseDischarge(dischObj);
-
-      return { type, discharge, ...newBaseEntry };
+      return {
+        type,
+        discharge: parseDischarge(
+          fieldParser<object, HospitalEntry>(obj, 'discharge', isObj)
+        ),
+      };
 
     case 'HealthCheck':
-      const healthCheckRating = fieldParser<HealthCheckRating>(
-        obj,
-        'healthCheckRating',
-        isHealthCheckRating
-      );
-
-      return { type, healthCheckRating, ...newBaseEntry };
+      return {
+        type,
+        healthCheckRating: fieldParser<HealthCheckRating, HealthCheckEntry>(
+          obj,
+          'healthCheckRating',
+          isHealthCheckRating
+        ),
+      };
 
     case 'OccupationalHealthcare':
-      const employerName = fieldParser<string>(obj, 'employerName', isString);
-      const occupationalEntry = { type, employerName, ...newBaseEntry };
-
+      const employerName = fieldParser<string, OccupationalHealthcareEntry>(
+        obj,
+        'employerName',
+        isString
+      );
       if (isObjKey('sickLeave', obj)) {
-        const sickObj = fieldParser<object>(obj, 'sickLeave', isObj);
-        const sickLeave = parseSickLeave(sickObj);
-
-        return { sickLeave, ...occupationalEntry };
+        return {
+          type,
+          employerName,
+          sickLeave: parseSickLeave(
+            fieldParser<object, OccupationalHealthcareEntry>(
+              obj,
+              'sickLeave',
+              isObj
+            )
+          ),
+        };
       }
-
-      return occupationalEntry;
+      return { employerName, type };
 
     default:
       throw new Error('yeah this wont happen');

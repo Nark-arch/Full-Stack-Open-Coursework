@@ -2,7 +2,7 @@ import { EntryType, entryTypes, Gender, HealthCheckRating } from '../types';
 
 export const isObj = (value: unknown): value is object => value === 'object';
 
-export const isObjKey = (key: string, obj: object): key is keyof object =>
+export const isObjKey = <T>(key: keyof T, obj: object): key is keyof object =>
   key in obj;
 
 export const isString = (value: unknown): value is string =>
