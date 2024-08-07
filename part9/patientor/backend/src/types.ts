@@ -1,3 +1,7 @@
+type UnionOmit<T, K extends string | number | symbol> = T extends unknown
+  ? Omit<T, K>
+  : never;
+
 export enum Gender {
   Male = 'male',
   Female = 'female',
@@ -10,24 +14,34 @@ export type Diagnosis = {
   latin?: string;
 };
 
-interface BaseEntry {
+type BaseEntry = {
   id: string;
   description: string;
   date: string;
   specialist: string;
 
   diagnosisCodes?: Array<Diagnosis['code']>;
-}
+};
 
-interface HospitalEntry extends BaseEntry {
+export type Discharge = {
+  date: string;
+  criteria: string;
+};
+
+export interface HospitalEntry extends BaseEntry {
   type: 'Hospital';
-  discharge: { date: string; criteria: string };
+  discharge: Discharge;
 }
 
-interface OccupationalHealthcareEntry extends BaseEntry {
+export type SickLeave = {
+  startDate: string;
+  endDate: string;
+};
+
+export interface OccupationalHealthcareEntry extends BaseEntry {
   type: 'OccupationalHealthcare';
   employerName: string;
-  sickLeave?: { startDate: string; endDate: string };
+  sickLeave?: SickLeave;
 }
 
 export enum HealthCheckRating {
@@ -47,6 +61,14 @@ export type Entry =
   | OccupationalHealthcareEntry
   | HealthCheckEntry;
 
+export const entryTypes: Set<string> = new Set([
+  'Hospital',
+  'OccupationalHealthcare',
+  'HealthCheck',
+]);
+
+export type EntryType = Entry['type'];
+
 export type Patient = {
   id: string;
   name: string;
@@ -59,4 +81,6 @@ export type Patient = {
 
 export type NonSensitivePatient = Omit<Patient, 'ssn' | 'entries'>;
 
+export type NewBaseEntry = Omit<BaseEntry, 'id'>;
+export type NewEntry = UnionOmit<Entry, 'id'>;
 export type NewPatient = Omit<Patient, 'id'>;
