@@ -33,10 +33,14 @@ export const toNewEntry = (requestBody: unknown): NewEntry => {
     description: fieldParser<string, NewEntry>(obj, 'description', isString),
     date: fieldParser<string, NewEntry>(obj, 'date', isDate),
     specialist: fieldParser<string, NewEntry>(obj, 'specialist', isString),
-    diagnosisCodes: parseDiagnosisCodes(obj),
     ...typeEntryFields(type, obj),
   };
 
+  const diagnosisCodes =
+    parseDiagnosisCodes(obj).length > 0 ? parseDiagnosisCodes(obj) : null;
+  if (diagnosisCodes) {
+    newEntry.diagnosisCodes = diagnosisCodes;
+  }
   return newEntry;
 };
 

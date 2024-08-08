@@ -9,7 +9,9 @@ export const fieldParser = <T, K>(
   if (!isObjKey(field, obj))
     throw new Error(`${String(field)} missing from request`);
   if (!validator(obj[field]))
-    throw new Error(`${String(field)} is malformmatted`);
+    throw new Error(
+      `field ${String(field)} value '${String(obj[field])}' is invalid`
+    );
 
   return obj[field];
 };

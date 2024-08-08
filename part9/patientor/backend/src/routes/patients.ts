@@ -56,10 +56,10 @@ patientsRouter.post('/:id/entries', (req, res) => {
 
     if (error instanceof Error) {
       errorMessage += ' Error: ' + error.message;
-      res.status(400).send(errorMessage);
+      res.status(400).json({ error: errorMessage });
     } else {
       console.log(error);
-      res.status(500).send('Something went VERY wrong');
+      res.status(500).json({ error: 'Something went VERY wrong' });
     }
   }
 });

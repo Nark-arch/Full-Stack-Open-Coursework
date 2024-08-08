@@ -1,6 +1,7 @@
 import { EntryType, entryTypes, Gender, HealthCheckRating } from '../types';
 
-export const isObj = (value: unknown): value is object => value === 'object';
+export const isObj = (value: unknown): value is object =>
+  typeof value === 'object';
 
 export const isObjKey = <T>(key: keyof T, obj: object): key is keyof object =>
   key in obj;
@@ -18,7 +19,7 @@ export const isEntryType = (value: unknown): value is EntryType => {
 export const isHealthCheckRating = (
   value: unknown
 ): value is HealthCheckRating =>
-  Boolean(Object.values(HealthCheckRating).find((v) => v === value));
+  Boolean(Object.values(HealthCheckRating).find((v) => v === Number(value)));
 
 export const isGender = (value: unknown): value is Gender =>
   isString(value) &&
