@@ -3,8 +3,10 @@ import { EntryType, entryTypes, Gender, HealthCheckRating } from '../types';
 export const isObj = (value: unknown): value is object =>
   typeof value === 'object';
 
-export const isObjKey = <T>(key: keyof T, obj: object): key is keyof object =>
-  key in obj;
+export const isObjKey = <T extends object>(
+  key: string | number | symbol,
+  obj: T
+): key is keyof T => key in obj;
 
 export const isString = (value: unknown): value is string =>
   typeof value === 'string' || value instanceof String;
@@ -26,3 +28,5 @@ export const isGender = (value: unknown): value is Gender =>
   Object.values(Gender)
     .map((v) => v.toString())
     .includes(value);
+
+type x = string;
