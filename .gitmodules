@@ -4,3 +4,9 @@
 [submodule "part9/patientor/patientor-frontend"]
 	path = part9/patientor/patientor-frontend
 	url = https://github.com/ksn-ark/patientor-frontend.git
+[submodule "part10/rate-rpository-app"]
+	path = part10/rate-rpository-app
+	url = https://github.com/ksn-ark/rate-repository-app.git
+[submodule "part10/rate-repository-app"]
+	path = part10/rate-repository-app
+	url = https://github.com/ksn-ark/rate-repository-app.git
